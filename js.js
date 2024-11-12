@@ -1,21 +1,53 @@
-// Objetivo: Desarrollar una plataforma web interactiva que permita gestionar proyectos y tareas. Esta práctica se centrará en implementar funcionalidades avanzadas de jQuery para manipular el DOM y responder a eventos, incluyendo la edición en línea de los proyectos.
+const generarId = () => crypto.randomUUID();
 
-// Descripción de la Actividad: Crear una aplicación web que permita al usuario:
+$("#add").click(function(){  
+    let id = generarId();
+    let nombreProyecto = $("#proyecto").val();
 
-// Agregar y eliminar proyectos.
-// Agregar y eliminar tareas dentro de los proyectos.
-// Editar los nombres de los proyectos haciendo doble clic en ellos.
-// Resaltar tareas al pasar el ratón sobre ellas.
-// Marcar tareas como importantes y completadas.
-// Requisitos:
+    if (nombreProyecto === "") {
+        alert("Por favor, ingresa un nombre para el proyecto.");
+        return;
+    }
 
-// Agregar Proyectos y Tareas:
-// Un formulario de entrada que permita al usuario añadir proyectos y tareas.
-// Eliminar Proyectos y Tareas:
-// Botones de eliminación para eliminar proyectos y tareas.
-// Edición de Proyectos:
-// Los nombres de los proyectos deben ser editables mediante un doble clic, convirtiendo el texto en un campo de entrada.
-// Los cambios deben guardarse al presionar Enter o hacer clic fuera del campo de entrada.
-// Interactividad Visual:
-// Las tareas deben cambiar de estilo al pasar el ratón sobre ellas.
-// Se deben poder marcar tareas como "importantes" o "completadas", aplicando diferentes clases CSS.
+    const nuevoProyecto = `
+        <li data-id="${id}">
+            ${nombreProyecto}
+            <div>
+                <input id="input-${id}" placeholder="Nueva Tarea">
+                <button class="addTarea" data-id="${id}">Añadir Tarea</button>
+                <button class="borrarProyecto" data-id="${id}">Eliminar Proyecto</button>
+            </div>
+            <ul class="listaTareas" id="tareas-${id}"></ul>
+        </li>
+    `;
+    $("#lista").append(nuevoProyecto);
+    $("#proyecto").val("");
+});
+
+$("body").on("click", ".addTarea", function() {
+    let id = generarId();
+    let tareaid = $(this).data("id");
+    let tareaInput =$(`#input-${tareaid}`);
+    let nombreTarea = tareaInput.val();
+
+    if (nombreTarea === "") {
+        alert("Por favor, ingresa una tarea.");
+        return;
+    }
+    const nuevaTarea = `
+        <li data-id="${id}">
+            ${nombreTarea}
+            <div>
+                <button class="CompletarTarea" data-id="${id}">Marcar Completada</button>
+                <button class="ImportanteTarea" data-id="${id}">Marcar Importate</button>
+                <button class="borrarTarea" data-id="${id}">Eliminar</button>
+            </div>
+        </li>
+    `;
+    $(`#tareas-${tareaid}`).append(nuevaTarea);
+});
+
+$("body").on("click", ".borrarProyecto", function(){
+    const proyectoId = $(this).data("id");
+    $(`li[data-id="${proyectoId}"]`).remove();
+});
